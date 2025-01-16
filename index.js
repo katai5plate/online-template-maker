@@ -17,6 +17,8 @@ const $ = {
     copy: document.querySelector("#copy"),
     /** @type {HTMLButtonElement} */
     export: document.querySelector("#export"),
+    /** @type {HTMLButtonElement} */
+    refresh: document.querySelector("#refresh"),
   },
   inputs: {
     /** @type {HTMLInputElement} */
@@ -266,6 +268,7 @@ document.body.onload = () => {
     fetch("./tm_example.json")
       .then((x) => x.text())
       .then((res) => onImport(res));
+  $.buttons.refresh.onclick = () => update();
 
   updatePlaceholders();
   convertResult();
