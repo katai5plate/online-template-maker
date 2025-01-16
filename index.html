@@ -5,37 +5,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ONLINE TEMPLATE MAKER</title>
+  <style>
+    body {
+      margin: 0 0 0 0;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .left {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .right {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
-  <p>
-    <button id="import">IMPORT JSON</button>
-    <button id="new">NEW</button>
-    <button id="example">LOAD EXAMPLE</button>
-  </p>
-  <p>bucket: <input id="bucket" /></p>
-
-  <hr />
-  <p>templates</p>
-  <div id="templates"></div>
-  <p>
-    <button id="add">ADD</button>
-    <button id="delete">DELETE</button>
-  </p>
-
-  <hr />
-  <p>custom</p>
-  <textarea id="custom" rows=15" cols="120"></textarea>
-  <p><code id="error">--</code></p>
-
-  <hr />
-  <p>result</p>
-  <textarea id="result" rows=15" cols="120"></textarea>
-  <p>
-    <button id="copy">COPY</button>
-    <button id="export">EXPORT JSON</button>
-  </p>
-
+  <div class="container">
+    <div class="left">
+      <b>SETTINGS</b>
+      <p>bucket: <input id="bucket" /></p>
+      <hr />
+      <b>TEMPLATES</b>
+      <div id="templates"></div>
+      <p>
+        <button id="add">ADD</button>
+        <button id="delete">DELETE</button>
+      </p>
+      <hr />
+      <b>CUSTOM</b>
+      <textarea id="custom" rows="50"></textarea>
+    </div>
+    <div class="right">
+      <p>
+        <button id="new">NEW</button>
+        <button id="import">OPEN</button>
+        <button id="example">EXAMPLE</button>
+        <button id="copy">COPY</button>
+        <button id="export">SAVE</button>
+      </p>
+      <b>PREVIEW</b>
+      <p><code id="error">--</code></p>
+      <textarea id="result"></textarea>
+    </div>
+  </div>
   <script type="module" src="./index.js"></script>
 </body>
 
