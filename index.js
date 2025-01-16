@@ -44,6 +44,8 @@ const $ = {
   },
 };
 
+const getHash = () => Date.now().toString(36).toLocaleUpperCase();
+
 /** @param {HTMLDivElement} templateNode */
 const templateToTree = (templateNode) => {
   /** @type {HTMLInputElement} */
@@ -120,11 +122,11 @@ const parseCustomToYaml = () => {
     const result = YAML.parse(
       $.textarea.custom.value || $.textarea.custom.placeholder
     );
-    if (!Array.isArray(result)) throw new Error("invalid format");
-    $.texts.error.textContent = "success!";
+    if (!Array.isArray(result)) throw new Error("faild to parse YAML");
+    console.log("success parsed YAML");
     return isDefault ? null : result;
   } catch (error) {
-    $.texts.error.textContent = error.message.split("\n")[0];
+    console.warn(error);
     return null;
   }
 };
@@ -157,8 +159,10 @@ const convertResult = () => {
     $.textarea.result.value = items
       .map((item) => renderNode(item, state.templates, bucket))
       .join("");
-  } catch {
-    $.texts.error.textContent = "convert failed";
+    $.texts.error.textContent = `success convert result (${getHash()})`;
+  } catch (error) {
+    $.texts.error.textContent = `failed to convert result (${getHash()})`;
+    console.warn(error);
   }
 };
 
@@ -174,6 +178,7 @@ const restoreFromUri = () => {
 };
 
 const update = () => {
+  state.bucket = $.inputs.bucket.value;
   state.templates.forEach((template, id) => {
     const tree = templateToTree(pickTemplateNode(id));
     template.name = tree.name.value;
