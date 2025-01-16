@@ -54,7 +54,7 @@ const getTemplateTrees = () =>
 const pickTemplateNode = (id) => document.querySelector(`.template#_${id}`);
 
 const updatePlaceholders = () => {
-  const bucket = $.inputs.bucket.value || "@@";
+  const bucket = $.inputs.bucket.value || "##";
   $.inputs.bucket.placeholder = bucket;
   getTemplateTrees().forEach(({ name, code }) => {
     name.placeholder = "text";
@@ -75,7 +75,7 @@ const updatePlaceholders = () => {
 };
 
 const state = {
-  bucket: "@@",
+  bucket: "##",
   templates: [],
   custom: "",
 };
@@ -246,7 +246,7 @@ const onCopy = () => {
 document.body.onload = () => {
   restoreFromUri();
 
-  $.inputs.bucket.value = state.bucket ?? "@@";
+  $.inputs.bucket.value = state.bucket ?? "##";
   $.textarea.custom.value = state.custom ? YAML.stringify(state.custom) : "";
 
   $.buttons.new.onclick = () =>
@@ -260,6 +260,9 @@ document.body.onload = () => {
   $.buttons.export.onclick = () => onExport();
   $.buttons.copy.onclick = () => onCopy();
   $.buttons.example.onclick = () =>
+    confirm(
+      "Load the example project.\nYour working data will be deleted.\nAre you sure?"
+    ) &&
     fetch("./tm_example.json")
       .then((x) => x.text())
       .then((res) => onImport(res));

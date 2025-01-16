@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" color-mode="dark" data-color-mode="dark">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+
   <title>ONLINE TEMPLATE MAKER</title>
   <style>
+    @media (prefers-color-scheme: dark) {
+      :root[color-mode="dark"] {
+        --color-accent: #0097fc4f;
+        --color-bg: #333;
+        --color-bg-secondary: #555;
+        --color-link: #486c85;
+        --color-secondary: #e20de9;
+        --color-secondary-accent: #e20de94f;
+        --color-shadow: #bbbbbb20;
+        --color-table: #0097fc;
+        --color-text: #f7f7f7;
+        --color-text-secondary: #aaa;
+      }
+    }
+
     body {
       margin: 0 0 0 0;
     }
@@ -20,6 +37,8 @@
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
+      min-width: 300px;
+      /* 例: 最小幅を300pxに設定 */
     }
 
     .right {
@@ -28,12 +47,25 @@
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
+      min-width: 300px;
+      /* 例: 最小幅を300pxに設定 */
+    }
+
+    .divide {
+      padding-bottom: 2px;
+      margin-bottom: 12px;
     }
 
     textarea {
       flex: 1;
       resize: none;
       width: 100%;
+      background-color: #111;
+      color: white;
+    }
+
+    button {
+      font-size: large;
     }
   </style>
 </head>
@@ -41,29 +73,36 @@
 <body>
   <div class="container">
     <div class="left">
-      <b>SETTINGS</b>
-      <p>bucket: <input id="bucket" /></p>
-      <hr />
-      <b>TEMPLATES</b>
-      <div id="templates"></div>
-      <p>
-        <button id="add">ADD</button>
-        <button id="delete">DELETE</button>
-      </p>
-      <hr />
-      <b>CUSTOM</b>
-      <textarea id="custom" rows="50"></textarea>
+      <h2>ONLINE TEMPLATE MAKER</h2>
+      <div style="background-color: #0f02;"><b>SETTINGS</b>
+        <p>bucket: <input id="bucket" /></p>
+        <div class="divide"></div>
+      </div>
+      <div style="background-color: #0ff2;">
+        <b>TEMPLATES</b>
+        <div id="templates" style="background-color: #0ff2;"></div>
+        <p>
+          <button id="add" alt="add">✨</button>
+          <button id="delete">🗑️</button>
+        </p>
+        <div class="divide"></div>
+      </div>
+      <div style="background-color: #f0f2;">
+        <b>CUSTOM</b>
+        <textarea id="custom" rows="50"></textarea>
+        <div class="divide"></div>
+      </div>
     </div>
     <div class="right">
       <p>
-        <button id="new">NEW</button>
-        <button id="import">OPEN</button>
-        <button id="example">EXAMPLE</button>
-        <button id="copy">COPY</button>
-        <button id="export">SAVE</button>
+        <button id="new">📄</button>
+        <button id="import">📂</button>
+        <button id="copy">📑</button>
+        <button id="export">💾</button>
+        <button id="example">💡</button>
       </p>
+      <p>log: <code id="error">--</code></p>
       <b>PREVIEW</b>
-      <p><code id="error">--</code></p>
       <textarea id="result"></textarea>
     </div>
   </div>
