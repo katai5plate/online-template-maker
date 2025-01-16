@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONLINE TEMPLATE MAKER</title>
+</head>
+
+<body>
+  <p>
+    <button id="import">IMPORT JSON</button>
+    <button id="new">NEW</button>
+    <button id="example">LOAD EXAMPLE</button>
+  </p>
+  <p>bucket: <input id="bucket" /></p>
+
+  <hr />
+  <p>templates</p>
+  <div id="templates"></div>
+  <p>
+    <button id="add">ADD</button>
+    <button id="delete">DELETE</button>
+  </p>
+
+  <hr />
+  <p>custom</p>
+  <textarea id="custom" rows=15" cols="120"></textarea>
+  <p><code id="error">--</code></p>
+
+  <hr />
+  <p>result</p>
+  <textarea id="result" rows=15" cols="120"></textarea>
+  <p>
+    <button id="copy">COPY</button>
+    <button id="export">EXPORT JSON</button>
+  </p>
+
+  <script type="module" src="./index.js"></script>
+</body>
+
+</html>

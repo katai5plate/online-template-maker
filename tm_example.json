@@ -1,0 +1,35 @@
+{
+  "bucket": "**",
+  "templates": [
+    {
+      "name": "accordion",
+      "code": "<Accordion>\n  <AccordionSummary\n    expandIcon={**icon**}\n    id=\"**id**\"\n  >\n    <Typography component=\"span\">**name**</Typography>\n  </AccordionSummary>\n  <AccordionDetails>**body**</AccordionDetails>\n</Accordion>"
+    },
+    {
+      "name": "button",
+      "code": "<Button onClick={**click**}>**name**</Button>"
+    }
+  ],
+  "custom": [
+    {
+      "$": "accordion",
+      "icon": "<DogIcon />",
+      "id": "aaaaa",
+      "name": "Accordion 1",
+      "body": [
+        {
+          "$": "accordion",
+          "icon": "<CatIcon />",
+          "id": "bbbbb",
+          "name": "Accordion 2",
+          "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\nmalesuada\nlacus ex, sit amet blandit leo lobortis eget."
+        }
+      ]
+    },
+    {
+      "$": "button",
+      "click": "() => handleClick()",
+      "name": "submit"
+    }
+  ]
+}
