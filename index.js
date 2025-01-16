@@ -16,6 +16,10 @@ const $ = {
     /** @type {HTMLButtonElement} */
     copy: document.querySelector("#copy"),
     /** @type {HTMLButtonElement} */
+    link: document.querySelector("#link"),
+    /** @type {HTMLButtonElement} */
+    debug: document.querySelector("#debug"),
+    /** @type {HTMLButtonElement} */
     export: document.querySelector("#export"),
     /** @type {HTMLButtonElement} */
     refresh: document.querySelector("#refresh"),
@@ -235,12 +239,12 @@ const onExport = () => {
   URL.revokeObjectURL(url);
 };
 
-const onCopy = () => {
+const onCopy = (text, note) => {
   navigator.clipboard
-    .writeText($.textarea.result.value)
-    .then(() => ($.texts.error.textContent = "copied to clipboard!"))
+    .writeText(text)
+    .then(() => ($.texts.error.textContent = `copied to clipboard ${note}!`))
     .catch((error) => {
-      $.texts.error.textContent = "failed to copy to clipboard";
+      $.texts.error.textContent = `failed to copy to clipboard ${note}`;
       console.error(error);
     });
 };
@@ -260,7 +264,8 @@ document.body.onload = () => {
   $.textarea.custom.onkeyup = () => update();
   $.buttons.import.onclick = () => onImport();
   $.buttons.export.onclick = () => onExport();
-  $.buttons.copy.onclick = () => onCopy();
+  $.buttons.copy.onclick = () => onCopy($.textarea.result.value, "result");
+  $.buttons.link.onclick = () => onCopy(location.href, "link");
   $.buttons.example.onclick = () =>
     confirm(
       "Load the example project.\nYour working data will be deleted.\nAre you sure?"
@@ -269,6 +274,10 @@ document.body.onload = () => {
       .then((x) => x.text())
       .then((res) => onImport(res));
   $.buttons.refresh.onclick = () => update();
+  $.buttons.debug.onclick = () => {
+    $.texts.error.textContent = "the log has been output!";
+    console.log({ $, state });
+  };
 
   updatePlaceholders();
   convertResult();
