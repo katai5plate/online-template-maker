@@ -155,7 +155,11 @@ const getTime = (format, interval) => {
 
 const convertResult = () => {
   try {
-    const renderNode = (value, templates, B, opt) => {
+    const { bucket, custom: items } = state;
+    const componentItems = items.filter((item) => item.$);
+    const globals = items.find((item) => item.$globals)?.$globals ?? {};
+    const settings = items.find((item) => item.$settings)?.$settings ?? {};
+    const renderNode = (value, templates, B) => {
       const escB = B.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const META_REGEX = new RegExp(`${escB}([A-Z]+)(:(.*?))?${escB}`, "g");
       if (Array.isArray(value)) {
@@ -176,15 +180,15 @@ const convertResult = () => {
           if (name === "DATE")
             return FNS.format(
               new Date(),
-              opt?.settings?.date?.format ?? "yyyy/MM/dd"
+              settings?.date?.format ?? "yyyy/MM/dd"
             );
           if (name === "TIME") {
-            const { time } = opt?.settings ?? {};
+            const { time } = settings ?? {};
             if (!time) return new Date().toLocaleTimeString();
             const { format, interval } = time ?? {};
             return getTime(format ?? "hh:mm:ss", interval ?? "1s");
           }
-          if (name === "GB") return arg ? opt?.globals[arg] ?? match : match;
+          if (name === "GB") return arg ? globals[arg] ?? match : match;
           if (name === "REM") return "";
           if (name === "DEF") {
             const args = arg.split(",");
@@ -201,14 +205,8 @@ const convertResult = () => {
       }
       return `${value}`;
     };
-    const { bucket, custom: items } = state;
-    const componentItems = items.filter((item) => item.$);
-    const globals = items.find((item) => item.$globals)?.$globals ?? {};
-    const settings = items.find((item) => item.$settings)?.$settings ?? {};
     $.textarea.result.value = componentItems
-      .map((item) =>
-        renderNode(item, state.templates, bucket, { globals, settings })
-      )
+      .map((item) => renderNode(item, state.templates, bucket))
       .join("");
     $.texts.error.textContent = `success convert result (${getHash()})`;
   } catch (error) {
