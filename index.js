@@ -325,7 +325,7 @@ document.body.onload = () => {
     confirm(
       "Load the example project.\nYour working data will be deleted.\nAre you sure?"
     ) &&
-    fetch("./tm_example.json")
+    fetch("./example.otm.json")
       .then((x) => x.text())
       .then((res) => onImport(res));
   $.buttons.refresh.onclick = () => update();

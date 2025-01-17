@@ -1,0 +1,83 @@
+{
+  "bucket": "@",
+  "templates": [
+    {
+      "name": "head",
+      "code": "## @name@\n@LINE@"
+    },
+    {
+      "name": "description",
+      "code": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt utlabore\net dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.\n\nnisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit\nesse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident...\n@LINE:2@\nsunt in culpa qui officia deserunt mollit anim id est laborum.\n@LINE@"
+    },
+    {
+      "name": "time",
+      "code": "It's usually around... @DATE@ @TIME@\n@LINE@...okey?\n@LINE@"
+    },
+    {
+      "name": "script",
+      "code": "```@GB:lang@\n@code@```\n@LINE@"
+    },
+    {
+      "name": "div",
+      "code": "<div>\n  @body@\n</div>\n"
+    },
+    {
+      "name": "button",
+      "code": "<Button onClick={@GB:click@}>@DEF:name,submit@</Button>"
+    }
+  ],
+  "custom": [
+    {
+      "$settings": {
+        "date": {
+          "format": "MM/dd/yyyy"
+        },
+        "time": {
+          "format": "h:mm",
+          "interval": "15m"
+        }
+      }
+    },
+    {
+      "$globals": {
+        "lang": "jsx",
+        "click": "console.log"
+      }
+    },
+    {
+      "$": "head",
+      "name": "How to make curry"
+    },
+    {
+      "$": "description"
+    },
+    {
+      "$": "head",
+      "name": "What time is it?"
+    },
+    {
+      "$": "time"
+    },
+    {
+      "$": "head",
+      "name": "How to write the buttons"
+    },
+    {
+      "$": "script",
+      "code": [
+        {
+          "$": "div",
+          "body": [
+            {
+              "$": "button"
+            }
+          ]
+        },
+        {
+          "$": "div",
+          "body": "hello!"
+        }
+      ]
+    }
+  ]
+}
