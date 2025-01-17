@@ -140,34 +140,42 @@ const parseCustomToYaml = () => {
 
 const convertResult = () => {
   try {
-    const renderNode = (node, templates, bucket) => {
-      if (Array.isArray(node)) {
-        if (node.every((item) => typeof item === "string"))
-          return node.join("\n");
-        return node
-          .map((child) => renderNode(child, templates, bucket))
-          .join("");
+    const renderNode = (value, templates, B, globals) => {
+      const escB = B.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const META_REGEX = new RegExp(`${escB}([A-Z_]+)(:(.*?))?${escB}`, "g");
+      if (Array.isArray(value)) {
+        if (value.every((item) => typeof item === "string"))
+          return value.join("\n");
+        return value.map((child) => renderNode(child, templates, B)).join("");
       }
-      if (node && typeof node === "object" && node.$) {
-        const { $: templateName, ...rest } = node;
+      if (value && typeof value === "object" && value.$) {
+        const { $: templateName, ...rest } = value;
         const template = templates.find((t) => t.name === templateName);
         if (!template) return "";
         const props = Object.fromEntries(
-          Object.entries(rest).map(([k, v]) => [
-            k,
-            renderNode(v, templates, bucket),
-          ])
+          Object.entries(rest).map(([k, v]) => [k, renderNode(v, templates, B)])
         );
+        let code = template.code;
+        code = code.replace(META_REGEX, (match, name, _, arg) => {
+          if (name === "LINE") return "\n".repeat(Math.abs(arg ?? 1));
+          if (name === "DATE") return new Date().toLocaleDateString();
+          if (name === "TIME") return new Date().toLocaleTimeString();
+          if (name === "GB") return arg ? globals[arg] ?? match : match;
+          if (name === "REM") return "";
+          return match;
+        });
         return Object.entries(props).reduce((acc, [key, value]) => {
-          const placeholder = `${bucket}${key}${bucket}`;
+          const placeholder = `${B}${key}${B}`;
           return acc.split(placeholder).join(value);
-        }, template.code);
+        }, code);
       }
-      return `${node}`;
+      return `${value}`;
     };
     const { bucket, custom: items } = state;
-    $.textarea.result.value = items
-      .map((item) => renderNode(item, state.templates, bucket))
+    const componentItems = items.filter((item) => item.$);
+    const globals = items.find((item) => item.$globals)?.$globals ?? {};
+    $.textarea.result.value = componentItems
+      .map((item) => renderNode(item, state.templates, bucket, globals))
       .join("");
     $.texts.error.textContent = `success convert result (${getHash()})`;
   } catch (error) {
