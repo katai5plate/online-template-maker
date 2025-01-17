@@ -4,6 +4,8 @@
 
 ## https://katai5plate.github.io/online-template-maker/
 
+## https://redirect.had2apps.com/to/tools/otm
+
 ## https://kutt.it/h2aotm
 
 ```
