@@ -339,4 +339,9 @@ document.body.onload = () => {
   updatePlaceholders();
   resizeAllTextarea();
   convertResult();
+
+  setInterval(() => {
+    console.log("auto update");
+    update();
+  }, 1000 * 60);
 };
