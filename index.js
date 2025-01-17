@@ -1,5 +1,6 @@
 import YAML from "https://cdn.jsdelivr.net/npm/yaml@2.7.0/+esm";
 import LZ from "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/+esm";
+import * as FNS from "https://cdn.jsdelivr.net/npm/date-fns@4.1.0/+esm";
 
 const $ = {
   buttons: {
@@ -138,11 +139,25 @@ const parseCustomToYaml = () => {
   }
 };
 
+const getTime = (format, interval) => {
+  const now = new Date();
+  const value = parseInt(interval, 10);
+  const type = `${interval}`.slice(-1);
+  const base = { h: "Hours", m: "Minutes", s: "Seconds" };
+  if (!/\d+([hms])/.test(interval) || !base[type])
+    return "|$settings.time.interval is invalid format|";
+  now["set" + base[type]](
+    Math.floor(now["get" + base[type]]() / value) * value,
+    ...[0, 0]
+  );
+  return FNS.format(now, format);
+};
+
 const convertResult = () => {
   try {
-    const renderNode = (value, templates, B, globals) => {
+    const renderNode = (value, templates, B, opt) => {
       const escB = B.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const META_REGEX = new RegExp(`${escB}([A-Z_]+)(:(.*?))?${escB}`, "g");
+      const META_REGEX = new RegExp(`${escB}([A-Z]+)(:(.*?))?${escB}`, "g");
       if (Array.isArray(value)) {
         if (value.every((item) => typeof item === "string"))
           return value.join("\n");
@@ -158,10 +173,25 @@ const convertResult = () => {
         let code = template.code;
         code = code.replace(META_REGEX, (match, name, _, arg) => {
           if (name === "LINE") return "\n".repeat(Math.abs(arg ?? 1));
-          if (name === "DATE") return new Date().toLocaleDateString();
-          if (name === "TIME") return new Date().toLocaleTimeString();
-          if (name === "GB") return arg ? globals[arg] ?? match : match;
+          if (name === "DATE")
+            return FNS.format(
+              new Date(),
+              opt?.settings?.date?.format ?? "yyyy/MM/dd"
+            );
+          if (name === "TIME") {
+            const { time } = opt?.settings ?? {};
+            if (!time) return new Date().toLocaleTimeString();
+            const { format, interval } = time ?? {};
+            return getTime(format ?? "hh:mm:ss", interval ?? "1s");
+          }
+          if (name === "GB") return arg ? opt?.globals[arg] ?? match : match;
           if (name === "REM") return "";
+          if (name === "DEF") {
+            const args = arg.split(",");
+            if (args.length !== 2) return "|DEF is invalid format|";
+            const [name, replace] = args;
+            return props[name] ?? replace;
+          }
           return match;
         });
         return Object.entries(props).reduce((acc, [key, value]) => {
@@ -174,8 +204,11 @@ const convertResult = () => {
     const { bucket, custom: items } = state;
     const componentItems = items.filter((item) => item.$);
     const globals = items.find((item) => item.$globals)?.$globals ?? {};
+    const settings = items.find((item) => item.$settings)?.$settings ?? {};
     $.textarea.result.value = componentItems
-      .map((item) => renderNode(item, state.templates, bucket, globals))
+      .map((item) =>
+        renderNode(item, state.templates, bucket, { globals, settings })
+      )
       .join("");
     $.texts.error.textContent = `success convert result (${getHash()})`;
   } catch (error) {
