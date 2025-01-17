@@ -134,10 +134,13 @@ const parseCustomToYaml = () => {
 const convertResult = () => {
   try {
     const renderNode = (node, templates, bucket) => {
-      if (Array.isArray(node))
+      if (Array.isArray(node)) {
+        if (node.every((item) => typeof item === "string"))
+          return node.join("\n");
         return node
           .map((child) => renderNode(child, templates, bucket))
           .join("");
+      }
       if (node && typeof node === "object" && node.$) {
         const { $: templateName, ...rest } = node;
         const template = templates.find((t) => t.name === templateName);
