@@ -88,6 +88,13 @@ const state = {
   custom: "",
 };
 
+const resizeAllTextarea = () => {
+  [...document.querySelectorAll("textarea.resize")].forEach((textarea) => {
+    const rows = (textarea.value || textarea.placeholder).split("\n").length;
+    textarea.rows = rows;
+  });
+};
+
 const addTemplate = (isRestore) => {
   let el = document.createElement("div");
   el.innerHTML = `<div class="template" id="_N">
@@ -108,7 +115,7 @@ const addTemplate = (isRestore) => {
     update();
   }
   name.onkeyup = () => update();
-  code.onkeyup = (e) => (update(), onTextarea(e.target));
+  code.onkeyup = () => (update(), resizeAllTextarea());
 };
 
 const deleteTemplate = () => {
@@ -192,6 +199,7 @@ const update = () => {
     JSON.stringify(state)
   )}`;
   updatePlaceholders();
+  resizeAllTextarea();
   convertResult();
 };
 
@@ -257,12 +265,6 @@ const onCopy = (text, note) => {
     });
 };
 
-/** @param {HTMLTextAreaElement} textarea */
-const onTextarea = (textarea) => {
-  const rows = textarea.value.split("\n").length;
-  textarea.rows = rows;
-};
-
 document.body.onload = () => {
   restoreFromUri();
 
@@ -275,7 +277,7 @@ document.body.onload = () => {
   $.buttons.delete.onclick = () => deleteTemplate();
   $.inputs.bucket.onkeyup = () => update();
   $.textarea.result.onkeyup = () => update();
-  $.textarea.custom.onkeyup = (e) => (update(), onTextarea(e.target));
+  $.textarea.custom.onkeyup = () => (update(), resizeAllTextarea());
   $.buttons.import.onclick = () => onImport();
   $.buttons.export.onclick = () => onExport();
   $.buttons.copy.onclick = () => onCopy($.textarea.result.value, "result");
@@ -293,10 +295,7 @@ document.body.onload = () => {
     console.log({ $, state });
   };
 
-  [...document.querySelectorAll("textarea.resize")].forEach((ta) =>
-    onTextarea(ta)
-  );
-
   updatePlaceholders();
+  resizeAllTextarea();
   convertResult();
 };
