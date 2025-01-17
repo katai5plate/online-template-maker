@@ -280,14 +280,14 @@ const onImport = (code = null) => {
 };
 
 const onExport = () => {
-  const title = prompt("ファイル名を入力", "tm_");
+  const title = prompt("ファイル名を入力", `${getHash()}`);
   if (title === null) return;
   const jsonString = JSON.stringify(state, null, 2);
   const blob = new Blob([jsonString], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${title}.json`;
+  a.download = `${title}.otm.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
